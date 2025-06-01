@@ -1,9 +1,9 @@
-import React, { use } from "react";
+import React from "react";
 import { NavLink } from "react-router";
-import { AuthContext } from "../../contexts/AuthContext";
+import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
-  const { user, signOutUser } = use(AuthContext);
+  const { user, signOutUser } = useAuth();
 
   const handleSignOut = () => {
     signOutUser()
@@ -22,6 +22,14 @@ const Navbar = () => {
       <li>
         <NavLink>Home</NavLink>
       </li>
+
+      {user && (
+        <>
+          <li>
+            <NavLink to="/myApplications">My Applications</NavLink>
+          </li>
+        </>
+      )}
     </>
   );
   return (

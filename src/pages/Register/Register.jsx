@@ -1,11 +1,11 @@
 import Lottie from "lottie-react";
-import React, { use } from "react";
+import React from "react";
 import registerAnimation from "../../assets/lotties/register.json";
-import { AuthContext } from "../../contexts/AuthContext";
 import SocialLogin from "../Shared/SocialLogin";
+import useAuth from "../../hooks/useAuth";
 
 const Register = () => {
-  const { createUser } = use(AuthContext);
+  const { createUser } = useAuth();
 
   const handleRegister = (e) => {
     e.preventDefault();
