@@ -1,6 +1,10 @@
 import React from "react";
+import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddJob = () => {
+  const { user } = useAuth();
   const handleAddJob = (e) => {
     e.preventDefault();
 
@@ -8,6 +12,42 @@ const AddJob = () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     console.log(data);
+
+    // process salary range data
+    const { min, max, currency, ...newJob } = data;
+    newJob.salaryRange = { min, max, currency };
+
+    // process requirements
+    newJob.requirements = newJob.requirements
+      .split(",")
+      .map((requirement) => requirement.trim());
+
+    // process responsibilities
+    newJob.responsibilities = newJob.responsibilities
+      .split(",")
+      .map((responsibility) => responsibility.trim());
+
+    newJob.status = "active";
+
+    console.log(newJob);
+
+    // save a job to the database
+    axios
+      .post("http://localhost:3000/jobs", newJob)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Job has been saved",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -65,18 +105,21 @@ const AddJob = () => {
               className="btn"
               type="radio"
               name="jobType"
+              value="On-Site"
               aria-label="On-Site"
             />
             <input
               className="btn"
               type="radio"
               name="jobType"
+              value="Remote"
               aria-label="Remote"
             />
             <input
               className="btn"
               type="radio"
               name="jobType"
+              value="Hybrid"
               aria-label="Hybrid"
             />
           </div>
@@ -102,7 +145,7 @@ const AddJob = () => {
         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
           <legend className="fieldset-legend">Application Deadline</legend>
 
-          <input type="date" className="input" />
+          <input type="date" name="deadline" className="input" />
         </fieldset>
 
         {/* salary range */}
@@ -163,7 +206,7 @@ const AddJob = () => {
 
           <textarea
             className="textarea"
-            name="description"
+            name="requirements"
             placeholder="Requirements (separate by comma)"
           ></textarea>
         </fieldset>
@@ -193,6 +236,7 @@ const AddJob = () => {
           <input
             type="text"
             name="hr_email"
+            defaultValue={user?.email}
             className="input"
             placeholder="HR Email"
           />

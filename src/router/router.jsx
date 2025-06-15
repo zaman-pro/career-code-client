@@ -8,6 +8,9 @@ import PrivateRoute from "../routes/PrivateRoute";
 import JobApply from "../pages/JobApply/JobApply";
 import MyApplications from "../pages/MyApplications/MyApplications";
 import AddJob from "../pages/AddJob/AddJob";
+import MyPostedJobs from "../pages/MyPostedJobs/MyPostedJobs";
+import ViewApplications from "../pages/ViewApplication/ViewApplication";
+import { h2 } from "motion/react-client";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +53,25 @@ const router = createBrowserRouter([
             <AddJob></AddJob>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/myPostedJobs",
+        element: (
+          <PrivateRoute>
+            <MyPostedJobs></MyPostedJobs>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/applications/:job_id",
+        element: (
+          <PrivateRoute>
+            <ViewApplications></ViewApplications>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/applications/job/${params.job_id}`),
+        hydrateFallbackElement: <h2>Loading...</h2>,
       },
       {
         path: "/register",

@@ -14,7 +14,10 @@ const MyApplications = () => {
         fallback={<span className="loading loading-dots loading-xl"></span>}
       >
         <ApplicationList
-          myApplicationsPromise={myApplicationsPromise(user.email)}
+          myApplicationsPromise={myApplicationsPromise(
+            user.email,
+            user.accessToken
+          )}
         ></ApplicationList>
       </Suspense>
     </div>
